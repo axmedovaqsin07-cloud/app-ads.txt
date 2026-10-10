@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Pro</title>
+    <meta name="google-adsense-account" content="ca-pub-1361057380960970">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #181818;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        /* Motivational Banner */
+        .banner-quote {
+            background: linear-gradient(135deg, #00C853, #64DD17);
+            color: #000;
+            text-align: center;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .banner-quote.editable:hover {
+            outline: 2px dashed #fff;
+        }
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #2c2c2c;
+        }
+        .admin-badge {
+            font-size: 12px;
+            color: #00C853;
+            font-weight: bold;
+            display: none;
+        }
+        .profile-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* App Info Section */
+        .app-header {
+            display: flex;
+            padding: 24px 20px;
+            gap: 20px;
+            align-items: center;
+        }
+        .app-logo-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+        .app-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 2px solid #00C853;
+            background-color: #222;
+        }
+        .logo-overlay {
+            position: absolute;
+            bottom: 0; right: 0;
+            background: #00C853;
+            color: #000;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: none;
+        }
+        .app-meta h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .app-meta h1.editable:hover, .app-meta .description.editable:hover {
+            outline: 1px dashed #00C853;
+        }
+        .app-meta .studio {
+            font-size: 14px;
+            color: #00C853;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .app-meta .category {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 20px;
+            border-top: 1px solid #2c2c2c;
+            border-bottom: 1px solid #2c2c2c;
+            background-color: #1a1a1a;
+            text-align: center;
+        }
+        .stat-item .value {
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .stat-item .label {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 2px;
+        }
+        /* Buttons */
+        .action-section {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-install {
+            width: 100%;
+            padding: 14px;
+            background-color: #00C853;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s;
+        }
+        .btn-install:hover {
+            background-color: #00b347;
+        }
+        .apk-upload-hint {
+            font-size: 11px;
+            color: #00C853;
+            text-align: center;
+            display: none;
+            cursor: pointer;
+        }
+        .btn-gta {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            color: #00C853;
+            border: 1px solid #00C853;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-gta:hover {
+            background-color: #222;
+        }
+        /* Details & Screenshots */
+        .section-title {
+            padding: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #fff;
+        }
+        .description {
+            padding: 10px 20px 20px 20px;
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+        /* Comments Section */
+        .comments-container {
+            padding: 20px;
+            border-top: 1px solid #2c2c2c;
+        }
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .comment-form input, .comment-form textarea {
+            padding: 10px;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .comment-form button {
+            padding: 10px;
+            background-color: #00C853;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .comment-card {
+            background-color: #222;
+            padding: 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .comment-user {
+            font-weight: bold;
+            font-size: 13px;
+            color: #00C853;
+        }
+        .comment-text {
+            font-size: 13px;
+            color: #ddd;
+            margin-top: 4px;
+        }
+        .delete-comment {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff5252;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            font-size: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        /* Admin Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #222;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #00C853;
+        }
+        .modal-content h3 {
+            color: #00C853;
+            text-align: center;
+        }
+        .modal-content input {
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-login { background: #00C853; color: #000; }
+        .btn-cancel { background: #444; color: #fff; }
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Motivational Banner -->
+    <div class="banner-quote" id="bannerQuote" onclick="editQuote()">"Keep going, don't stop! Reach your goals."</div>
+
+    <!-- Header -->
+    <header>
+        <span class="admin-badge" id="adminBadge">👑 Admin Mode Active</span>
+        <button class="profile-btn" onclick="openAdminModal()">👤</button>
+    </header>
+
+    <!-- App Info -->
+    <div class="app-header">
+        <div class="app-logo-wrapper" onclick="triggerLogoChange()" title="Click to select logo from gallery">
+            <img id="appLogoImg" src="https://i.ibb.co/3s6H79H/diet-pro-logo.jpg" alt="Diet Pro Logo" class="app-logo">
+            <div class="logo-overlay" id="logoOverlay">Galeri</div>
+        </div>
+        <div class="app-meta">
+            <h1 id="appNameText" onclick="editAppName()">Diet Pro</h1>
+            <div class="studio">By Studio Zen</div>
+            <div class="category">Health & Fitness • Contains Ads</div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="value">4.8 ★</div>
+            <div class="label">12K Reviews</div>
+        </div>
+        <div class="stat-item">
+            <div class="value">50M+</div>
+            <div class="label">Downloads</div>
+        </div>
+        <div class="stat-item">
+            <div class="value">E</div>
+            <div class="label">Rated for Everyone</div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-section">
+        <a href="#" download id="apkDownloadBtn" class="btn-install" onclick="downloadApkFile(event)">Install APK</a>
+        <div class="apk-upload-hint" id="apkUploadHint" onclick="triggerApkUpload()">📁 Telefonundan Yeni APK Dosyası Seç</div>
+        <button class="btn-gta" onclick="addToGTA()">Add to GTA</button>
+    </div>
+
+    <!-- Hidden file inputs for gallery and APK selection -->
+    <input type="file" id="logoFileInput" accept="image/*" onchange="handleLogoGallerySelect(event)">
+    <input type="file" id="apkFileInput" accept=".apk" onchange="handleApkFileSelect(event)">
+
+    <!-- Description -->
+    <div class="section-title">About this app</div>
+    <div class="description" id="appDescription" onclick="editDescription()">
+        Diet Pro helps you track your daily nutrition, monitor calories, and achieve your health goals effortlessly with personalized plans and expert guidance.
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-container">
+        <div class="section-title" style="padding: 0 0 10px 0;">Ratings & Reviews</div>
+        <div class="comment-form">
+            <input type="text" id="commentName" placeholder="Your Name">
+            <textarea id="commentText" rows="2" placeholder="Write a review..."></textarea>
+            <button onclick="addComment()">Post Review</button>
+        </div>
+        <div class="comment-list" id="commentList">
+            <!-- Dynamic Comments -->
+        </div>
+    </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal" id="adminModal">
+    <div class="modal-content">
+        <h3>Admin Login</h3>
+        <input type="email" id="adminEmail" placeholder="Gmail address">
+        <input type="password" id="adminPassword" placeholder="Password">
+        <div class="modal-buttons" style="margin-top: 5px;">
+            <button class="btn-login" onclick="loginAdmin()">Login</button>
+            <button class="btn-cancel" onclick="closeAdminModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isAdmin = false;
+    const authorizedEmail = "axmedovaqsin07@gmail.com"; 
+    const authorizedPass = "2014_aksin";    
+
+    let comments = JSON.parse(localStorage.getItem('diet_comments')) || [
+        { id: 1, name: "Jessica M.", text: "Amazing app! Lost 5 kg in a month." },
+        { id: 2, name: "David K.", text: "Very useful tracking features." }
+    ];
+
+    // Sayfa açıldığında kayıtlı verileri yükle
+    window.onload = function() {
+        const savedName = localStorage.getItem('diet_appName');
+        const savedQuote = localStorage.getItem('diet_quote');
+        const savedDesc = localStorage.getItem('diet_desc');
+        const savedLogo = localStorage.getItem('diet_logo');
+
+        if (savedName) document.getElementById('appNameText').innerText = savedName;
+        if (savedQuote) document.getElementById('bannerQuote').innerText = `"${savedQuote}"`;
+        if (savedDesc) document.getElementById('appDescription').innerText = savedDesc;
+        if (savedLogo) document.getElementById('appLogoImg').src = savedLogo;
+        
+        renderComments();
+    };
+
+    function renderComments() {
+        const list = document.getElementById('commentList');
+        list.innerHTML = '';
+        comments.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'comment-card';
+            card.innerHTML = `
+                <div class="comment-user">${c.name}</div>
+                <div class="comment-text">${c.text}</div>
+                <button class="delete-comment" style="display: ${isAdmin ? 'block' : 'none'};" onclick="deleteComment(${c.id})">Delete</button>
+            `;
+            list.appendChild(card);
+        });
+        localStorage.setItem('diet_comments', JSON.stringify(comments));
+    }
+
+    function addComment() {
+        const name = document.getElementById('commentName').value.trim();
+        const text = document.getElementById('commentText').value.trim();
+        if(name && text) {
+            comments.unshift({ id: Date.now(), name, text });
+            document.getElementById('commentName').value = '';
+            document.getElementById('commentText').value = '';
+            renderComments();
+        }
+    }
+
+    function deleteComment(id) {
+        if(isAdmin) {
+            comments = comments.filter(c => c.id !== id);
+            renderComments();
+        }
+    }
+
+    function addToGTA() {
+        alert("Diet Pro has been successfully added to your GTA mods directory!");
+    }
+
+    function openAdminModal() {
+        if (isAdmin) {
+            alert("You are already logged in as Admin!");
+            return;
+        }
+        document.getElementById('adminModal').style.display = 'flex';
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').style.display = 'none';
+    }
+
+    function loginAdmin() {
+        const email = document.getElementById('adminEmail').value.trim();
+        const pass = document.getElementById('adminPassword').value.trim();
+        
+        if (email === authorizedEmail && pass === authorizedPass) {
+            isAdmin = true;
+            closeAdminModal();
+            
+            alert("Admin olarak giriş yaptınız!");
+            document.getElementById('adminBadge').style.display = 'block';
+            document.getElementById('logoOverlay').style.display = 'block';
+            document.getElementById('apkUploadHint').style.display = 'block';
+            
+            document.getElementById('appNameText').classList.add('editable');
+            document.getElementById('bannerQuote').classList.add('editable');
+            document.getElementById('appDescription').classList.add('editable');
+            
+            renderComments();
+        } else {
+            alert("Invalid Gmail or Password!");
+        }
+    }
+
+    function editAppName() {
+        if (!isAdmin) return;
+        const newName = prompt("Enter new app name:", document.getElementById('appNameText').innerText);
+        if (newName) {
+            document.getElementById('appNameText').innerText = newName;
+            localStorage.setItem('diet_appName', newName);
+            alert("App name updated!");
+        }
+    }
+
+    function editQuote() {
+        if (!isAdmin) return;
+        const newQ = prompt("Enter new motivational quote:", document.getElementById('bannerQuote').innerText.replace(/"/g, ''));
+        if (newQ) {
+            document.getElementById('bannerQuote').innerText = `"${newQ}"`;
+            localStorage.setItem('diet_quote', newQ);
+            alert("Quote updated!");
+        }
+    }
+
+    function editDescription() {
+        if (!isAdmin) return;
+        const newDesc = prompt("Enter new app description:", document.getElementById('appDescription').innerText);
+        if (newDesc) {
+            document.getElementById('appDescription').innerText = newDesc;
+            localStorage.setItem('diet_desc', newDesc);
+            alert("Description updated!");
+        }
+    }
+
+    // Galeriden Fotoğraf Seçme (Admin Modu Açıkken Logoya Tıklayınca)
+    function triggerLogoChange() {
+        if (!isAdmin) {
+            alert("Logoyu değiştirmek için önce sağ üstteki profil simgesinden Admin olarak giriş yapmalısınız!");
+            return;
+        }
+        document.getElementById('logoFileInput').click();
+    }
+
+    function handleLogoGallerySelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                document.getElementById('appLogoImg').src = base64Img;
+                localStorage.setItem('diet_logo', base64Img);
+                alert("Galeriden seçilen logo başarıyla uygulandı!");
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Telefondan APK Dosyası Seçip Yükleme
+    function triggerApkUpload() {
+        if (!isAdmin) return;
+        document.getElementById('apkFileInput').click();
+    }
+
+    function handleApkFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // APK verisini tarayıcı önbelleğinde sakla ki kullanıcılar indirebilsin
+                localStorage.setItem('diet_apkData', e.target.result);
+                localStorage.setItem('diet_apkName', file.name);
+                alert(`"${file.name}" dosyası başarıyla yüklendi! Artık kullanıcılar indirebilir.`);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Kullanıcılar APK İndir tuşuna bastığında
+    function downloadApkFile(event) {
+        const apkData = localStorage.getItem('diet_apkData');
+        const apkName = localStorage.getItem('diet_apkName') || "Diet-pro_1.apk";
+        
+        if (apkData) {
+            event.preventDefault();
+            const a = document.createElement('a');
+            a.href = apkData;
+            a.download = apkName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else {
+            // Eğer admin henüz dosya yüklemediyse varsayılan GitHub dosya adına yönlendirir
+            const btn = document.getElementById('apkDownloadBtn');
+            btn.href = "Diet-pro_1.apk";
+        }
+    }
+</script>
+
+</body>
+  </html>
