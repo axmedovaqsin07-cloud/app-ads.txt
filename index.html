@@ -1,386 +1,172 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zen Store - Powered by StudioZen</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <!-- Firebase Canlı Veritabanı -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Madeni Para Koleksiyonum</title><style id="app-css">:root{--bg:#14291f;--card:#1c382b;--ink:#f1ead9;--mute:#aab7a8;--brass:#d2a64a;--line:#2f5240;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+header{padding:40px 20px 24px;max-width:1000px;margin:auto}
+h1{font-size:clamp(2rem,6vw,3.2rem);margin:0 0 8px;letter-spacing:.01em;font-weight:700}
+header p{margin:0;color:var(--mute);max-width:52ch}
+main{max-width:1000px;margin:auto;padding:8px 20px 56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.photo{aspect-ratio:1;border-radius:10px;background:#0f1f17;display:grid;place-items:center;overflow:hidden;position:relative}
+.photo img{width:100%;height:100%;object-fit:cover}
+.disc{width:72%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:1.6rem;color:rgba(0,0,0,.55);box-shadow:inset 0 0 0 6px rgba(0,0,0,.12),inset 0 0 0 9px rgba(255,255,255,.18)}
+.gold{background:radial-gradient(circle at 30% 30%,#f6dd8a,#c99a2e)}
+.silver{background:radial-gradient(circle at 30% 30%,#f2f4f5,#9aa3a8)}
+.bronze{background:radial-gradient(circle at 30% 30%,#e2a06a,#9a5a2c)}
+.add{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:var(--ink);font:13px system-ui,sans-serif;padding:6px 10px;border-radius:20px;cursor:pointer}
+.add input{display:none}
+h2{font-size:1.2rem;margin:0}
+.sub{color:var(--mute);font-size:.92rem;margin:0}
+button.info{font:600 15px system-ui,sans-serif;background:var(--brass);color:#2a2008;border:0;border-radius:10px;padding:12px;cursor:pointer;min-height:44px}
+button.info:focus-visible,.add:focus-within{outline:3px solid var(--ink);outline-offset:2px}
+.details{display:none;border-top:1px solid var(--line);padding-top:12px;font-size:.95rem}
+.card.open .details{display:block}
+.details dt{color:var(--brass);font-weight:700;margin-top:10px}
+.details dd{margin:2px 0 0}
 
-  <style>
-    :root {
-      --primary: #01875f;
-      --primary-dark: #006648;
-      --bg-color: #f8f9fa;
-      --card-bg: #ffffff;
-      --text-main: #202124;
-      --text-sub: #5f6368;
-      --border-color: #dadce0;
-      --danger: #ea4335;
-      --success: #34a853;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+.row{display:flex;gap:8px}.row>*{flex:1}
+button.g,button.del{font:600 15px system-ui,sans-serif;border-radius:10px;padding:12px;cursor:pointer;min-height:44px;background:transparent;color:var(--ink);border:1px solid var(--brass);text-decoration:none;text-align:center}
+button.del{border-color:var(--line);color:var(--mute);flex:0 0 auto;padding:12px 14px}
+.bar{max-width:1000px;margin:0 auto;padding:0 20px 20px}
+.bar>summary{display:inline-block;list-style:none;background:var(--brass);color:#2a2008;font:700 15px system-ui,sans-serif;padding:12px 18px;border-radius:10px;cursor:pointer}
+form{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+form label{display:grid;gap:4px;font:14px system-ui,sans-serif;color:var(--mute)}
+form .full{grid-column:1/-1}
+input[type=text],select,textarea{font:16px system-ui,sans-serif;background:#0f1f17;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%}
+textarea{min-height:70px}
+.note{font:13px system-ui,sans-serif;color:var(--mute);margin:10px 0 0}
+.lang{position:absolute;top:14px;right:16px;background:transparent;color:var(--ink);border:1px solid var(--brass);border-radius:20px;font:600 14px system-ui,sans-serif;padding:8px 14px;cursor:pointer;min-height:40px}
+header{position:relative}
+#st{font:14px system-ui,sans-serif;color:var(--brass);margin:0}
+button.alt{font:600 15px system-ui,sans-serif;background:transparent;color:var(--ink);border:1px solid var(--brass);border-radius:10px;padding:12px;cursor:pointer;min-height:44px}
+</style></head><body><div id="root"></div><template id="shell"><header><button class="lang" id="lang" type="button">ქართული</button><h1 id="t1"></h1><p id="t2"></p></header>
+<details class="bar" id="bar" hidden><summary id="t3"></summary>
+<form id="f">
+<label class="full">Fotoğraf<input type="file" id="ph" accept="image/*"></label>
+<label class="full">Paranın adı<input type="text" id="ad" required></label>
+<p class="note full" style="margin:0">Sadece fotoğraf ve adı gir. Diğer alanları boş bırakırsan yapay zeka araştırıp doldurur. İstersen kendin de yazabilirsin.</p>
+<label>Ülke<input type="text" id="ulke"></label>
+<label>Yıl<input type="text" id="yil"></label>
+<label class="full">Metal<select id="metal"><option value="">Otomatik (yapay zeka)</option><option value="gold">Altın</option><option value="silver">Gümüş</option><option value="bronze">Bakır / Bronz</option></select></label>
+<label class="full">Metal bilgisi (ayar, gram vb.)<input type="text" id="mb"></label>
+<label class="full">O dönem ülkenin durumu<textarea id="du"></textarea></label>
+<label class="full">Neden basıldı<textarea id="ne"></textarea></label>
+<label class="full">İlginç bilgi<textarea id="il"></textarea></label>
+<p id="st" class="full" role="status"></p>
+<button class="alt" id="fillb" type="button">Yapay zeka ile doldur</button>
+<button class="info" type="submit">Koleksiyona ekle</button>
+</form>
+<button class="alt" id="trb" type="button" style="margin-top:12px">Gürcüce çevirileri tamamla</button>
+<p class="note">Bu bölümü sadece sen görürsün. Yapay zeka bilgilerde hata yapabilir, eklemeden önce kontrol et.</p></details>
+<main id="shop"></main></template><script type="application/json" id="data">[{"ad": "Altın Sovereign", "ulke": "Birleşik Krallık", "yil": "1837–1901 (Victoria dönemi)", "metal": "gold", "mb": "22 ayar altın, yaklaşık 7,98 gram", "du": "Ülke Sanayi Devrimi’nin ve dünya ticaretinin merkeziydi; İngiliz İmparatorluğu en geniş dönemine yaklaşıyordu.", "ne": "Altın standardının temel parasıydı. Değeri sabit olduğu için dünyada güvenle kabul edilirdi.", "il": "Arka yüzdeki Aziz George ejderhayla savaşırken görülür. Bu tasarım sanatçı Benedetto Pistrucci’ye aittir."}, {"ad": "Morgan Gümüş Doları", "ulke": "Amerika Birleşik Devletleri", "yil": "1878–1904 ve 1921", "metal": "silver", "mb": "%90 gümüş, %10 bakır, yaklaşık 26,73 gram", "du": "Ülke hızla sanayileşiyordu ve batıdaki gümüş madenleri çok gümüş çıkarıyordu.", "ne": "Gümüş madencilerini desteklemek ve dolaşımda daha çok gümüş para bulundurmak için basıldı.", "il": "Adını tasarımcısı George T. Morgan’dan alır. Özgürlük Heykeli figürü için Philadelphia’da bir öğretmen model olmuştur."}, {"ad": "Roma Denarius’u", "ulke": "Roma İmparatorluğu", "yil": "Yaklaşık MÖ 27 – MS 14 (Augustus dönemi)", "metal": "silver", "mb": "Gümüş, yaklaşık 3,9 gram", "du": "Uzun iç savaşlardan sonra Augustus ile barış ve düzen dönemi başlamıştı.", "ne": "Askerlere maaş ödemek ve geniş imparatorlukta ticareti kolaylaştırmak için basıldı.", "il": "Denarius yüzyıllar boyunca Roma’nın en bilinen gümüş parası oldu. Üzerindeki portreler, imparatorun halka mesaj verme yoluydu."}, {"ad": "Osmanlı Kuruşu", "ulke": "Osmanlı Devleti", "yil": "II. Abdülhamid dönemi (1876–1909)", "metal": "silver", "mb": "Gümüş (ayarını kendi paranla kontrol et)", "du": "Devlet mali sıkıntı yaşıyor, toprak kaybediyor ve modernleşmeye çalışıyordu.", "ne": "Gündelik ticarette kullanılan devlet parasıydı.", "il": "Osmanlı paralarının üzerinde padişahın imzası olan tuğra bulunur."}, {"ad": "Jjjj", "ulke": "Jjh", "yil": "Nk", "metal": "silver", "mb": "Cc", "du": "gcc", "ne": "Ggg", "il": "G"}]</script><script id="app-js">var SHELL=document.getElementById("shell"),root=document.getElementById("root");
+root.appendChild(SHELL.content.cloneNode(true));
+var coins=[];try{coins=JSON.parse(document.getElementById("data").textContent)}catch(e){}
+var canEdit=false,artifact=null,syms={gold:"Au",silver:"Ag",bronze:"Cu"},lang="tr";
+try{lang=localStorage.getItem("lang")==="ka"?"ka":"tr"}catch(e){}
+var shop=document.getElementById("shop");
+var L={tr:{t1:"Madeni Para Koleksiyonum",t2:"Elimdeki paralar. Bilgiler düğmesine basınca parayla ilgili ayrıntıları görürsün.",t3:"Yeni para ekle",info:"Bilgiler",hide:"Bilgileri gizle",g:"Google’da ara",del:"Sil",sure:"Emin misin?",up:"Fotoğraf yükle",empty:"Henüz para eklenmedi.",btn:"ქართული",ad:"Para",yil:"Yıl",ulke:"Ülke",mb:"Metal",du:"Ülkenin durumu",ne:"Neden basıldı",il:"İlginç bilgi"},
+ka:{t1:"ჩემი მონეტების კოლექცია",t2:"ჩემი მონეტები. დააჭირე ღილაკს „ინფორმაცია“ დეტალების სანახავად.",t3:"ახალი მონეტის დამატება",info:"ინფორმაცია",hide:"დამალვა",g:"მოძებნე Google-ში",del:"წაშლა",sure:"დარწმუნებული ხარ?",up:"ფოტოს ატვირთვა",empty:"მონეტები ჯერ არ დამატებულა.",btn:"Türkçe",ad:"მონეტა",yil:"წელი",ulke:"ქვეყანა",mb:"ლითონი",du:"ქვეყნის მდგომარეობა",ne:"რატომ იჭრებოდა",il:"საინტერესო ფაქტი"}};
+function T(k){return L[lang][k]}
+function F(c,k){return lang==="ka"&&c.ka&&c.ka[k]?c.ka[k]:c[k]}
+function applyLang(){
+  document.documentElement.lang=lang==="ka"?"ka":"tr";
+  document.getElementById("t1").textContent=T("t1");document.getElementById("t2").textContent=T("t2");
+  document.getElementById("t3").textContent=T("t3");document.getElementById("lang").textContent=T("btn");
+}
+document.getElementById("lang").onclick=function(){lang=lang==="tr"?"ka":"tr";try{localStorage.setItem("lang",lang)}catch(e){}applyLang();render()};
+function build(){
+  var css=document.getElementById("app-css").textContent,js=document.getElementById("app-js").textContent;
+  var json=JSON.stringify(coins).replace(/</g,"\\u003c");
+  return '<!DOCTYPE html>\n<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Madeni Para Koleksiyonum</title><style id="app-css">'+css+'</style></head><body><div id="root"></div><template id="shell">'+SHELL.innerHTML+'</template><script type="application/json" id="data">'+json+'</'+'script><script id="app-js">'+js+'</'+'script></body></html>';
+}
+async function commit(){
+  if(!artifact)return;
+  try{await artifact.publish(build())}catch(e){if(!e||e.code!=="conflict")alert("Kaydedilemedi: "+((e&&(e.message||e.code))||"bilinmeyen hata"))}
+}
+function shrink(file,cb){
+  var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+    var m=480,k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");
+    c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    cb(c.toDataURL("image/jpeg",.7))};im.src=r.result};r.readAsDataURL(file)}
+function toBlob(u){var b=atob(u.split(",")[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:"image/jpeg"})}
+var KEYS=["ulke","yil","mb","du","ne","il"];
+function st(t){document.getElementById("st").textContent=t||""}
+async function aiFill(c){
+  var s=await claude.use("sample");if(!s)throw new Error("Yapay zeka şu an kullanılamıyor.");
+  var known={};KEYS.forEach(function(k){if(c[k])known[k]=c[k]});
+  var opts={};
+  try{if(c.foto&&(await s.limits()).images)opts.images=[toBlob(c.foto)]}catch(e){}
+  var p="Bir madeni para koleksiyonu sitesi için bu para hakkında Türkçe bilgi yaz.\nPara adı: "+c.ad+"\nSahibinin zaten girdiği bilgiler (değiştirme): "+JSON.stringify(known)+(opts.images?"\nParanın fotoğrafı ekte; yazıları ve görseli kullan.":"")+
+  "\nSadece şu anahtarlarla JSON döndür: {\"ulke\":\"\",\"yil\":\"\",\"metal\":\"gold|silver|bronze\",\"mb\":\"metal bilgisi: ayar ve gram\",\"du\":\"o dönem ülkenin durumu\",\"ne\":\"neden basıldı\",\"il\":\"ilginç bir bilgi\"}.\nHer alan en çok 2 kısa cümle olsun. Emin olmadığın bilgiyi uydurma, bu durumda \"kesin değil\" diye belirt.";
+  var r=await s.json(p,opts);
+  KEYS.forEach(function(k){if(!c[k]&&r[k])c[k]=String(r[k])});
+  if(!c.metal&&/^(gold|silver|bronze)$/.test(r.metal))c.metal=r.metal;
+}
+async function aiTranslate(c){
+  var s=await claude.use("sample");if(!s)throw new Error("Yapay zeka şu an kullanılamıyor.");
+  var src={ad:c.ad};KEYS.forEach(function(k){if(c[k])src[k]=c[k]});
+  var r=await s.json("Translate the string values of this JSON object into Georgian (ქართული). Keep the same keys. Coin names: translate or transliterate into Georgian script. Return only the JSON object.\n"+JSON.stringify(src));
+  var o={};Object.keys(src).forEach(function(k){if(r[k])o[k]=String(r[k])});c.ka=o;
+}
+function render(){
+  shop.innerHTML="";
+  if(!coins.length){var p=document.createElement("p");p.className="sub";p.style.gridColumn="1/-1";p.textContent=T("empty");shop.appendChild(p)}
+  coins.forEach(function(c,idx){
+    var d=document.createElement("article");d.className="card";
+    d.innerHTML='<div class="photo"><div class="disc"></div>'+(canEdit?'<label class="add"><span></span><input type="file" accept="image/*"></label>':'')+'</div>'+
+    '<div><h2></h2><p class="sub"></p></div><button class="info" aria-expanded="false"></button>'+
+    '<div class="row"><a class="g" target="_blank" rel="noopener"></a>'+(canEdit?'<button class="del" type="button"></button>':'')+'</div><dl class="details"></dl>';
+    var disc=d.querySelector(".disc");disc.className="disc "+(c.metal||"silver");disc.textContent=syms[c.metal]||"";
+    if(c.foto){disc.style.display="none";var im=document.createElement("img");im.alt=c.ad;im.src=c.foto;d.querySelector(".photo").prepend(im)}
+    d.querySelector("h2").textContent=F(c,"ad");
+    d.querySelector(".sub").textContent=[F(c,"ulke"),F(c,"yil")].filter(Boolean).join(", ");
+    var dl=d.querySelector("dl");
+    KEYS.forEach(function(k){var val=F(c,k);if(!val)return;var t=document.createElement("dt"),v=document.createElement("dd");t.textContent=T(k==="mb"?"mb":k);v.textContent=val;dl.append(t,v)});
+    var g=d.querySelector("a.g");g.textContent=T("g");
+    g.href="https://www.google.com/search?q="+encodeURIComponent([c.ad,c.yil,c.ulke,"madeni para"].filter(Boolean).join(" "));
+    var b=d.querySelector("button.info");b.textContent=T("info");
+    b.onclick=function(){var o=d.classList.toggle("open");b.setAttribute("aria-expanded",o);b.textContent=o?T("hide"):T("info")};
+    if(canEdit){
+      d.querySelector(".add span").textContent=T("up");
+      var del=d.querySelector("button.del");del.textContent=T("del");
+      del.onclick=function(){if(del.dataset.s){coins.splice(idx,1);commit()}else{del.dataset.s=1;del.textContent=T("sure");setTimeout(function(){del.dataset.s="";del.textContent=T("del")},3000)}};
+      d.querySelector("input").onchange=function(e){var f=e.target.files[0];if(!f)return;shrink(f,function(u){c.foto=u;commit()})};
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-
-    header { background-color: #fff; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
-    .nav-container { max-width: 1200px; margin: 0 auto; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    
-    .brand { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; color: var(--primary); cursor: pointer; }
-    
-    .search-bar { flex: 1; min-width: 180px; max-width: 350px; position: relative; }
-    .search-bar input { width: 100%; padding: 8px 14px 8px 38px; border-radius: 20px; border: 1px solid var(--border-color); background: #f1f3f4; outline: none; font-size: 13px; }
-    .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
-
-    .header-actions { display: flex; align-items: center; gap: 6px; }
-    
-    .btn { padding: 6px 12px; border-radius: 16px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-    .btn-primary { background-color: var(--primary); color: #fff; }
-    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-success { background: var(--success); color: #fff; }
-
-    .categories-bar { background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 15px; }
-    .categories-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 15px; overflow-x: auto; }
-    .cat-item { padding: 10px 0; color: var(--text-sub); font-weight: 500; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
-    .cat-item.active { color: var(--primary); border-bottom-color: var(--primary); }
-
-    main { max-width: 1200px; margin: 20px auto; padding: 0 15px; flex: 1; width: 100%; }
-    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-    .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    
-    .app-card { background: var(--card-bg); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; position: relative; transition: transform 0.2s; }
-    .app-card:hover { transform: translateY(-3px); }
-    .app-icon { width: 65px; height: 65px; border-radius: 14px; object-fit: cover; margin-bottom: 8px; }
-    .app-name { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
-    .powered-by { font-size: 10px; color: var(--primary); font-weight: 700; margin-top: 3px; }
-
-    .delete-app-btn { position: absolute; top: 6px; right: 6px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 10px; z-index: 5; }
-    body.is-admin .delete-app-btn { display: flex; }
-
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 10px; }
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; padding: 20px; position: relative; }
-    .close-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 20px; color: var(--text-sub); cursor: pointer; }
-
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 4px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; }
-
-    .comment-box { background: #f8f9fa; border-radius: 8px; padding: 8px; margin-top: 6px; border: 1px solid #e0e0e0; }
-    .comment-user { font-weight: 600; font-size: 11px; color: var(--primary); }
-    .comment-text { font-size: 12px; margin-top: 2px; }
-
-    footer { background: #fff; border-top: 1px solid var(--border-color); padding: 12px; text-align: center; color: var(--text-sub); font-size: 11px; margin-top: auto; }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="nav-container">
-      <div class="brand" onclick="switchTab('all')">
-        <i class="fa-brands fa-google-play"></i>
-        <span>Zen Store</span>
-      </div>
-
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Uygulama ara..." onkeyup="filterApps()">
-      </div>
-
-      <div class="header-actions">
-        <button class="btn btn-primary" id="adminBtn" onclick="openAdminPortal()">
-          <i class="fa-solid fa-user-shield"></i> <span id="adminBtnText">Admin Girişi</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <div class="categories-bar">
-    <div class="categories-container">
-      <div class="cat-item active" onclick="switchTab('all')">Tümü</div>
-      <div class="cat-item" onclick="switchTab('app')">Uygulamalar</div>
-      <div class="cat-item" onclick="switchTab('game')">Oyunlar</div>
-      <div class="cat-item" onclick="switchTab('tool')">Araçlar</div>
-    </div>
-  </div>
-
-  <main>
-    <div class="section-title">
-      <span>Zen Uygulamaları</span>
-      <span id="adminBadge" style="display:none; color: var(--primary); font-size:11px; font-weight:bold;">[Admin Aktif]</span>
-    </div>
-
-    <div class="app-grid" id="appGrid">
-      <p style="text-align:center; grid-column: 1/-1; color: var(--text-sub);">Uygulamalar yükleniyor...</p>
-    </div>
-  </main>
-
-  <!-- Admin Login Modal -->
-  <div class="modal-overlay" id="adminLoginModal">
-    <div class="modal" style="max-width: 350px;">
-      <button class="close-btn" onclick="closeModal('adminLoginModal')">&times;</button>
-      <h2 style="margin-bottom: 12px; font-size:18px;">Admin Girişi</h2>
-      <form onsubmit="processAdminLogin(event)">
-        <div class="form-group">
-          <label>E-posta</label>
-          <input type="email" id="loginEmail" required placeholder="axmedovaqsin07@gmail.com">
-        </div>
-        <div class="form-group">
-          <label>Şifre</label>
-          <input type="password" id="loginPass" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px;">Giriş Yap</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Admin Control Panel (Add App & Manage) -->
-  <div class="modal-overlay" id="adminPanelModal">
-    <div class="modal">
-      <button class="close-btn" onclick="closeModal('adminPanelModal')">&times;</button>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-        <h2 style="font-size:18px;">Admin Paneli</h2>
-        <button class="btn btn-outline" onclick="logoutAdmin()" style="color:var(--danger)">Çıkış</button>
-      </div>
-
-      <h3 style="font-size:14px; margin-bottom:8px;">MEGA'ya Attığın Yeni Uygulamayı Ekle</h3>
-      <form onsubmit="handleQuickAdd(event)" style="background:#f8f9fa; padding:12px; border-radius:10px; margin-bottom:15px;">
-        <div class="form-group">
-          <label>Uygulama Adı *</label>
-          <input type="text" id="qName" required placeholder="Örn: Benim Oyunum">
-        </div>
-        <div class="form-group">
-          <label>Kategori *</label>
-          <select id="qCategory">
-            <option value="app">Uygulama</option>
-            <option value="game">Oyun</option>
-            <option value="tool">Araç</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Uygulama İkonu (Resim Linki) *</label>
-          <input type="url" id="qIcon" placeholder="https://..." required>
-        </div>
-        <div class="form-group">
-          <label>MEGA Dosya Linki *</label>
-          <input type="url" id="qDownloadUrl" placeholder="https://mega.nz/..." required>
-        </div>
-        <div class="form-group">
-          <label>Açıklama *</label>
-          <textarea id="qDesc" rows="2" required placeholder="Uygulama hakkında bilgi..."></textarea>
-        </div>
-        <button type="submit" class="btn btn-success" style="width:100%; justify-content:center; padding:10px;">Sitede Yayınla</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- App Detail & Comments View -->
-  <div class="modal-overlay" id="detailModal">
-    <div class="modal">
-      <button class="close-btn" onclick="closeModal('detailModal')">&times;</button>
-      <div id="detailContent"></div>
-    </div>
-  </div>
-
-  <footer>
-    <p>&copy; 2026 Zen Store - Powered by StudioZen</p>
-  </footer>
-
-  <script>
-    const firebaseConfig = {
-      databaseURL: "https://zen-app-store-default-rtdb.firebaseio.com"
-    };
-    
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-
-    let publishedApps = {};
-    let isAdmin = false;
-    let currentCategory = 'all';
-
-    db.ref("published_apps").on("value", snapshot => {
-      publishedApps = snapshot.val() || {};
-      renderApps();
-    });
-
-    function renderApps() {
-      const grid = document.getElementById("appGrid");
-      grid.innerHTML = "";
-      const keys = Object.keys(publishedApps);
-      
-      if (keys.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-sub);">Henüz yayınlanan uygulama yok.</p>';
-        return;
-      }
-
-      keys.forEach(key => {
-        const app = publishedApps[key];
-        if (currentCategory !== 'all' && app.category !== currentCategory) return;
-
-        const card = document.createElement("div");
-        card.className = "app-card";
-        card.onclick = (e) => {
-          if (!e.target.classList.contains('delete-app-btn') && !e.target.closest('.delete-app-btn')) {
-            openAppDetail(key);
-          }
-        };
-
-        card.innerHTML = `
-          <button class="delete-app-btn" onclick="deleteAppInstantly(event, '${key}')"><i class="fa-solid fa-trash"></i></button>
-          <img src="${app.icon}" class="app-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2583/2583344.png'">
-          <div class="app-name">${app.name}</div>
-          <div class="powered-by">Powered by StudioZen</div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function deleteAppInstantly(e, key) {
-      e.stopPropagation();
-      if (confirm("Bu uygulamayı tüm cihazlardan silmek istediğinize emin misiniz?")) {
-        db.ref("published_apps/" + key).remove();
-      }
-    }
-
-    function handleQuickAdd(e) {
-      e.preventDefault();
-      db.ref("published_apps").push({
-        name: document.getElementById("qName").value,
-        category: document.getElementById("qCategory").value,
-        icon: document.getElementById("qIcon").value,
-        downloadUrl: document.getElementById("qDownloadUrl").value,
-        desc: document.getElementById("qDesc").value
-      });
-      document.getElementById("qName").value = "";
-      document.getElementById("qIcon").value = "";
-      document.getElementById("qDownloadUrl").value = "";
-      document.getElementById("qDesc").value = "";
-      closeModal("adminPanelModal");
-      alert("Uygulama başarıyla eklendi ve tüm dünyadaki kullanıcılara yansıdı!");
-    }
-
-    function openAppDetail(key) {
-      const app = publishedApps[key];
-      if (!app) return;
-
-      const comments = app.comments || {};
-      let commentsHtml = "";
-      Object.keys(comments).forEach(cKey => {
-        const c = comments[cKey];
-        commentsHtml += `<div class="comment-box"><div class="comment-user">${c.user}</div><div class="comment-text">${c.text}</div></div>`;
-      });
-
-      document.getElementById("detailContent").innerHTML = `
-        <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
-          <img src="${app.icon}" style="width:60px; height:60px; border-radius:14px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2583/2583344.png'">
-          <div>
-            <h3 style="font-size:16px;">${app.name}</h3>
-            <span style="color:var(--primary); font-weight:bold; font-size:11px;">Powered by StudioZen</span>
-          </div>
-        </div>
-        <p style="margin-bottom:12px; color:var(--text-sub); font-size:13px;">${app.desc}</p>
-        <a href="${app.downloadUrl}" target="_blank" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none; padding:10px; margin-bottom:15px;">
-          <i class="fa-solid fa-cloud-arrow-down"></i> MEGA ile İndir
-        </a>
-        <hr style="border:0; border-top:1px solid #eee; margin-bottom:12px;">
-        <h4 style="font-size:13px; margin-bottom:8px;">Yorumlar</h4>
-        <div style="max-height:120px; overflow-y:auto; margin-bottom:12px;">${commentsHtml || '<p style="font-size:11px; color:var(--text-sub);">Henüz yorum yok.</p>'}</div>
-        <form onsubmit="addComment(event, '${key}')">
-          <input type="text" id="commentUser" placeholder="Adınız" required style="padding:6px; margin-bottom:6px; width:100%; font-size:12px;">
-          <input type="text" id="commentText" placeholder="Yorum yazın..." required style="padding:6px; margin-bottom:6px; width:100%; font-size:12px;">
-          <button type="submit" class="btn btn-outline" style="width:100%; justify-content:center;">Gönder</button>
-        </form>
-      `;
-      openModal("detailModal");
-    }
-
-    function addComment(e, appKey) {
-      e.preventDefault();
-      db.ref(`published_apps/${appKey}/comments`).push({
-        user: document.getElementById("commentUser").value,
-        text: document.getElementById("commentText").value
-      });
-      alert("Yorum eklendi!");
-      openAppDetail(appKey);
-    }
-
-    function openAdminPortal() {
-      if (isAdmin) {
-        openModal("adminPanelModal");
-      } else {
-        openModal("adminLoginModal");
-      }
-    }
-
-    function processAdminLogin(e) {
-      e.preventDefault();
-      const em = document.getElementById("loginEmail").value.trim();
-      const pass = document.getElementById("loginPass").value.trim();
-
-      if (em === "axmedovaqsin07@gmail.com" && pass === "2014_aksin") {
-        isAdmin = true;
-        document.body.classList.add("is-admin");
-        document.getElementById("adminBadge").style.display = "inline";
-        document.getElementById("adminBtnText").innerText = "Admin Paneli";
-        closeModal("adminLoginModal");
-        openModal("adminPanelModal");
-      } else {
-        alert("Hatalı e-posta veya şifre!");
-      }
-    }
-
-    function logoutAdmin() {
-      isAdmin = false;
-      document.body.classList.remove("is-admin");
-      document.getElementById("adminBadge").style.display = "none";
-      document.getElementById("adminBtnText").innerText = "Admin Girişi";
-      closeModal("adminPanelModal");
-    }
-
-    function switchTab(cat) {
-      currentCategory = cat;
-      document.querySelectorAll(".cat-item").forEach(el => el.classList.remove("active"));
-      event.target.classList.add("active");
-      renderApps();
-    }
-
-    function filterApps() {
-      const q = document.getElementById("searchInput").value.toLowerCase();
-      const grid = document.getElementById("appGrid");
-      grid.innerHTML = "";
-      
-      const keys = Object.keys(publishedApps);
-      const filtered = keys.filter(k => publishedApps[k].name.toLowerCase().includes(q) || publishedApps[k].desc.toLowerCase().includes(q));
-
-      if (filtered.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-sub);">Uygulama bulunamadı.</p>';
-        return;
-      }
-
-      filtered.forEach(key => {
-        const app = publishedApps[key];
-        const card = document.createElement("div");
-        card.className = "app-card";
-        card.onclick = () => openAppDetail(key);
-        card.innerHTML = `
-          <button class="delete-app-btn" onclick="deleteAppInstantly(event, '${key}')"><i class="fa-solid fa-trash"></i></button>
-          <img src="${app.icon}" class="app-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2583/2583344.png'">
-          <div class="app-name">${app.name}</div>
-          <div class="powered-by">Powered by StudioZen</div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function openModal(id) { document.getElementById(id).classList.add("active"); }
-    function closeModal(id) { document.getElementById(id).classList.remove("active"); }
-  </script>
-</body>
-        </html>
+    shop.appendChild(d);
+  });
+}
+function readForm(){
+  function v(i){return document.getElementById(i).value.trim()}
+  return {ad:v("ad"),ulke:v("ulke"),yil:v("yil"),metal:v("metal"),mb:v("mb"),du:v("du"),ne:v("ne"),il:v("il")};
+}
+function writeForm(c){["ulke","yil","mb","du","ne","il"].forEach(function(k){document.getElementById(k).value=c[k]||""});if(c.metal)document.getElementById("metal").value=c.metal}
+function withPhoto(c,cb){var f=document.getElementById("ph").files[0];if(f)shrink(f,function(u){c.foto=u;cb()});else cb()}
+document.getElementById("fillb").onclick=function(){
+  var c=readForm();if(!c.ad){st("Önce paranın adını yaz.");return}
+  st("Yapay zeka araştırıyor…");
+  withPhoto(c,function(){aiFill(c).then(function(){writeForm(c);st("Bilgiler dolduruldu. Kontrol edip ekleyebilirsin.")}).catch(function(e){st("Hata: "+(e.message||e.code||"bilinmeyen"))})});
+};
+document.getElementById("f").onsubmit=function(e){
+  e.preventDefault();var c=readForm();
+  st("Yapay zeka araştırıyor ve Gürcüceye çeviriyor…");
+  withPhoto(c,async function(){
+    try{await aiFill(c)}catch(err){st("Yapay zeka doldurulamadı, elindeki bilgilerle ekleniyor. "+(err.message||err.code||""))}
+    try{await aiTranslate(c)}catch(err){}
+    if(!c.metal)c.metal="silver";
+    coins.push(c);st("Kaydediliyor…");commit();
+  });
+};
+document.getElementById("trb").onclick=async function(){
+  var b=this;b.disabled=true;
+  try{for(var i=0;i<coins.length;i++){if(!coins[i].ka){b.textContent="Çevriliyor "+(i+1)+"/"+coins.length;await aiTranslate(coins[i])}}
+    b.textContent="Kaydediliyor…";commit()}
+  catch(e){b.textContent="Hata: "+(e.message||e.code||"bilinmeyen");b.disabled=false}
+};
+applyLang();render();
+(async function(){
+  try{
+    var u=await claude.use("user"),a=await claude.use("artifact");
+    if(u&&a&&(u.isOwner()||u.canEdit())){canEdit=true;artifact=a;document.getElementById("bar").hidden=false;render()}
+  }catch(e){}
+})();</script></body></html>
